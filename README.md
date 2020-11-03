@@ -27,6 +27,7 @@ d. O transporte por via aérea é feito às 3as, 5as e sábados às 6.00.
 # 3. Percursos para entrega de encomendas
 A entrega de encomendas a partir do ponto de distribuição mais próximo da morada de destino é feita por via terrestre por um estafeta da empresa que conduz um veículo de mercadorias que transporta as encomendas. Nesta fase terá que desenvolver um programa que dê ao estafeta o percurso que deve percorrer de forma a minimizar a distância percorrida e voltando no final das entregas ao centro de distribuição de onde partiu. Para esta parte, utilizará como exemplo o mapa da cidade do porto dividido em subáreas correspondentes às freguesias.
 ![Mapa do Porto](https://user-images.githubusercontent.com/37451431/98048814-61015580-1e26-11eb-9f3a-3299c2e04822.png)
+
 Note o seguinte:
 - Assume-se que entregas feitas dentro da mesma área têm um custo temporal fixo de
 10 minutos.
