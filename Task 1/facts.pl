@@ -1,5 +1,5 @@
 % Module export
-:- module(facts, [trip/4, disponibilidade/3]).
+:- module(facts, [trip/4, disponibilidade/3, verificaDisponibilidade/3]).
 
 %Trip Flight
 trip(flight,amesterdam,paris,430).
@@ -130,3 +130,59 @@ disponibilidade(car,7,12).
 % trip(car,paris,lisboa,640).
 % trip(car,paris,porto,250).
 % trip(car,berlim,amesterdam,116).
+
+% Verificar disponibilidade de avião ou carro
+% Função auxiliar para método 2
+
+% Situação Ideal Horas Minutos
+verificaDisponibilidade(DataHora, Count, TipoFinal) :-
+    stamp_date_time(DataHora, DataHoraAux, 'UTC'),
+    date_time_value(date, DataHoraAux,Data), day_of_the_week(Data, Dia),
+    date_time_value(hour, DataHoraAux, Hora),
+    date_time_value(minute, DataHoraAux, Minuto),
+    Minuto == 0,											 
+    disponibilidade(TipoFinal, Dia, Hora), 
+    Count is 0.
+
+% Situação Ideal Minutos - Hora diferente												 
+verificaDisponibilidade(DataHora, Count, TipoFinal):- 
+    stamp_date_time(DataHora, DataHoraAux, 'UTC'),
+    date_time_value(date, DataHoraAux, Data), day_of_the_week(Data, Dia),
+    date_time_value(hour, DataHoraAux, Hora),	
+    date_time_value(minute, DataHoraAux, Minuto),
+    disponibilidade(TipoFinal, Dia, HoraDisp),
+    HoraDisp > Hora, Count is ((HoraDisp - Hora) * 3600) - (Minuto * 60).	
+
+verificaDisponibilidade(DataHora, Count, TipoFinal):-
+    stamp_date_time(DataHora, DataHoraAux, 'UTC'),
+    date_time_value(date, DataHoraAux, Data), day_of_the_week(Data, Dia),
+    date_time_value(hour, DataHoraAux, Hora),	
+    date_time_value(minute, DataHoraAux, Minuto),
+    disponibilidade(TipoFinal, Dia, HoraDisp),
+    HoraDisp < Hora, Hora < 12, Count is ((12 - Hora) * 3600) - (Minuto * 60).	
+    
+verificaDisponibilidade(DataHora, Count, TipoFinal):-
+    stamp_date_time(DataHora, DataHoraAux, 'UTC'),
+    date_time_value(hour, DataHoraAux, Hora),
+    date_time_value(minute,DataHoraAux,Minuto),
+    Hora > 12, Minuto == 0, Count1 is ((24 - Hora) * 3600) - (Minuto * 60),
+    DataHora2 is DataHora + Count1,
+    verificaDisponibilidade1(DataHora2, Count, Count1, TipoFinal).
+
+verificaDisponibilidade(DataHora, Count, TipoFinal):- 
+    stamp_date_time(DataHora, DataHoraAux, 'UTC'),
+    date_time_value(hour, DataHoraAux, Hora),
+    date_time_value(minute, DataHoraAux, Minuto),
+    Hora >= 12, Minuto > 0, Count1 is ((24 - Hora) * 3600) - (Minuto * 60),
+    DataHora2 is DataHora + Count1,
+    verificaDisponibilidade1(DataHora2, Count, Count1, TipoFinal).
+       
+verificaDisponibilidade1(DataHora, Count, Count1, TipoFinal):- 
+    stamp_date_time(DataHora, DataHoraAux, 'UTC'),
+    date_time_value(date, DataHoraAux, Data), day_of_the_week(Data,Dia),
+    date_time_value(hour, DataHoraAux, Hora),
+    date_time_value(minute, DataHoraAux, Minuto),
+    disponibilidade(TipoFinal, Dia, HoraDisp),
+    Hora == 0,
+    Count is (Count1 + ((HoraDisp - Hora) * 3600) - (Minuto * 60)).	
+    
