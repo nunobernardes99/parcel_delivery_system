@@ -4,7 +4,6 @@
 % Testar a tarefa:
 % tarefa(porto, lisbon, date(2020, 11, 30, 18, 0, 0, 0, _, _), 1, Barato, Rapido).
 % tarefa(oslo, warsaw, date(2020, 11, 30, 7, 30, 0, 0, _, _), 1, Barato, Rapido).
-% tarefa(budapest, porto, date(2020, 11, 30, 8, 0, 0, 0, _, _), 1, Barato, Rapido).
 
 tarefa(Orig, Dest, Data, Peso, Perc, Perc1):- 
     percursoMaisBarato(Orig, Dest, Peso, Perc), 
@@ -16,7 +15,7 @@ tarefa(Orig, Dest, Data, Peso, Perc, Perc1):-
 % Algoritmo Branch & BOund - Tarefa 1 Método 1 Mais barato
 percursoMaisBarato(Orig, Dest, Peso, Perc) :-
     go1([((0,0), [Orig])], Dest, Peso, P),
-    reverse(P, Perc).
+    reverse(P, Perc), !.
 
 % Caso final
 go1([((C, Y), Prim)| _], Dest, Peso, Prim) :- 
@@ -59,7 +58,7 @@ percursoMaisRapido(Orig, Dest, DataHora, Perc) :-
     date_time_stamp(DataHora, Segundos),
     SegundosFinal = Segundos,
     go2([(0, [Orig])], Dest, Segundos, SegundosFinal, P),
-    reverse(P, Perc).
+    reverse(P, Perc), !.
 
 % Caso final
 go2([(C, Prim)| _], Dest, Segundos, _, Prim) :-
@@ -67,8 +66,8 @@ go2([(C, Prim)| _], Dest, Segundos, _, Prim) :-
     write('Percurso Mais Rápido: '), nl, SFinal is Segundos + C, stamp_date_time(SFinal, DataFinal, 0),
     date_time_value(year, DataFinal, Ano), date_time_value(month, DataFinal, Mes), date_time_value(day, DataFinal, Dia),
     write('Data de Chegada: '), write(Dia), write('/'), write(Mes), write('/'), write(Ano),
-    date_time_value(hour, DataFinal, Hora), date_time_value(minute, DataFinal, Minuto),
-    write(' Horas de Chegada: '), write(Hora), write(':'), write(Minuto), nl,
+    date_time_value(hour, DataFinal, Hora), date_time_value(minute, DataFinal, Minuto), nl,
+    write('Horas de Chegada: '), write(Hora), write(':'), write(Minuto), nl,
     write('==========================[ BARATO / RÁPIDO ]=========================='), nl.
 
 % Interromper, Continuar a pesquisa no Resto
