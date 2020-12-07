@@ -3,11 +3,13 @@
 
 % Função principal
 % Testes:
+%   estafeta([])
 %   estafeta([b1, d1, d2, g2])
-%
+%   estafeta([d1, f2, c1, b1, g2])
+estafeta([]) :- format('Preencha a lista de encomendas com valores'),  halt().
 estafeta(Encomendas) :-
       % Afirmação: O destino mais longe do centro de distribuição será o último a ser entregue.
-      percurso_mais_longe(Encomendas, Destino), 
+      entrega_mais_longe(Encomendas, Destino), 
       % Procurar o caminho mais curto desde o centro até ao destino calculado encima.
       % Para cada caminho retornado verificar se o Percurso contêm todas as moradas das
       % Encomendas. Se contiver, retornar ao centro de distribuição.
@@ -27,7 +29,16 @@ estafeta(Encomendas) :-
 
 % Função que investiga qual dos nós onde é necessário entregar
 % encomendas está mais longe do centro de distribuição
-percurso_mais_longe(List, X) :- reverse(List, [X|_]).
+entrega_mais_longe(List, X) :- reverse(List, [X|_]).
+% entrega_mais_longe([], _, _).
+% entrega_mais_longe([Encomenda| Encomendas], DistanciaMaxima, _) :-
+%        caminho_mais_curto(centro_distribuicao, Encomenda, _, DistanciaAtual),
+%        DistanciaAtual >= DistanciaMaxima,
+%        entrega_mais_longe(Encomendas, DistanciaAtual, Encomenda).
+% entrega_mais_longe([Encomenda| Encomendas], DistanciaMaxima, NoMaximo) :-
+%        caminho_mais_curto(centro_distribuicao, Encomenda, _, DistanciaAtual),
+%        DistanciaAtual < DistanciaMaxima,
+%        entrega_mais_longe(Encomendas, DistanciaMaxima, NoMaximo).
 
 % Função que verifica se no conjunto de nós visitados a solução existe
 verificar_solucao([], _).

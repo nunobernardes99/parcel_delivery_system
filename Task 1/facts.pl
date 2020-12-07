@@ -112,25 +112,6 @@ disponibilidade(car,6,12).
 disponibilidade(car,7,7).
 disponibilidade(car,7,12).
 
-% Base de Conhecimento Teste
-% Trip Flight
-% trip(flight,porto,lisboa,300).
-% trip(flight,lisboa,porto,300).
-% trip(flight,paris,berlim,500).
-% trip(flight,berlim,paris,500).
-%
-% Trip Car
-% trip(car,amesterdam,berlim,116).
-% trip(car,amesterdam,lisboa,10).
-% trip(car,berlim,lisboa,710).
-% trip(car,porto,paris,250).
-% trip(car,lisboa,berlim,710).
-% trip(car,lisboa,amesterdam,10).
-% trip(car,lisboa,paris,640).
-% trip(car,paris,lisboa,640).
-% trip(car,paris,porto,250).
-% trip(car,berlim,amesterdam,116).
-
 % Verificar disponibilidade de avião ou carro
 % Função auxiliar para método 2
 
