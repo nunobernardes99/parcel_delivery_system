@@ -25,16 +25,9 @@ c. O transporte por via terrestre é feito todos os dias às 7.00 e às 12.00.
 d. O transporte por via aérea é feito às 3as, 5as e sábados às 6.00.
 
 # 3. Percursos para entrega de encomendas
-A entrega de encomendas a partir do ponto de distribuição mais próximo da morada de destino é feita por via terrestre por um estafeta da empresa que conduz um veículo de mercadorias que transporta as encomendas. Nesta fase terá que desenvolver um programa que dê ao estafeta o percurso que deve percorrer de forma a minimizar a distância percorrida e voltando no final das entregas ao centro de distribuição de onde partiu. Para esta parte, utilizará como exemplo o mapa da cidade do porto dividido em subáreas correspondentes às freguesias.
-![Mapa do Porto](https://user-images.githubusercontent.com/37451431/98048814-61015580-1e26-11eb-9f3a-3299c2e04822.png)
+A entrega de encomendas a partir do ponto de distribuição mais próximo da morada de destino é feita por via terrestre por um estafeta da empresa que conduz um veículo de mercadorias que transporta as encomendas. Nesta fase terá que desenvolver um programa que dê ao estafeta o percurso que deve percorrer de forma a minimizar a distância percorrida e voltando no final das entregas ao centro de distribuição de onde partiu. Para esta parte, utilizará como exemplo o mapa da cidade do porto dividido em subáreas correspondentes às freguesias.<br/>
 
-Note o seguinte:
-- Assume-se que entregas feitas dentro da mesma área têm um custo temporal fixo de
-10 minutos.
-- As encomendas podem ter associadas horas máximas para entrega que devem ser
-cumpridas tanto quanto possível.
-- Os destinatários podem indicar o horário em que estão disponíveis para receber as
-encomendas.
+![Mapa do Porto](https://user-images.githubusercontent.com/37451431/98048814-61015580-1e26-11eb-9f3a-3299c2e04822.png)
 
 Deve modelar o mapa e implementar um gerador de percursos tendo em conta as restrições
 enunciadas anteriormente. O percurso de teste que criar terá que ter no mínimo 15 pontos de

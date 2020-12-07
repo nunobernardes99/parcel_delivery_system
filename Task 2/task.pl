@@ -1,62 +1,58 @@
-% Load external modules
+% Carregar modulo de factos
 :- use_module(facts).
 
-criaListaEncomendas(L) :- findall([X, Y], encomenda(X, Y), L).
+% Função principal
+% Testes:
+%   estafeta([b1, d1, d2, g2])
+%
+estafeta(Encomendas) :-
+      % Afirmação: O destino mais longe do centro de distribuição será o último a ser entregue.
+      percurso_mais_longe(Encomendas, Destino), 
+      % Procurar o caminho mais curto desde o centro até ao destino calculado encima.
+      % Para cada caminho retornado verificar se o Percurso contêm todas as moradas das
+      % Encomendas. Se contiver, retornar ao centro de distribuição.
+      caminho_mais_curto(centro_distribuicao, Destino, PercursoIda, DistanciaIda),
+      verificar_solucao(Encomendas, PercursoIda),
+      % Caminho mais curto e ótimo desde o destino até à origem (retornar à base)
+      caminho_mais_curto(Destino, centro_distribuicao, [HVolta| PercursoVolta], DistanciaVolta),
+      % Concatenar caminho de entregas e de retorno à base e respetivas distâncias
+      append(PercursoIda, PercursoVolta, PercursoTotal),
+      DistanciaTotal is DistanciaIda + DistanciaVolta,
+      % Retornar resultados
+      format('+~`-t~78|+ ~n', []),
+      format('Percurso de ida -> ~w, Distância de ida -> ~w ~n', [PercursoIda, DistanciaIda]),
+      format('Percurso de volta -> ~w, Distância de volta -> ~w ~n ~n', [[HVolta| PercursoVolta], DistanciaVolta]),
+      format('Percurso total -> ~w, Distância total -> ~w ~n', [PercursoTotal, DistanciaTotal]),
+      format('+~`-t~78|+ ~n', []), !.
 
-entregaEncomenda(Perc, Total) :- 
-    criaListaEncomendas(LE), 
-    entregaEncomendas(LE, Perc, Total).
-entregaEncomendas([Dest| T], Perc, Total) :-
-    nth1(1, Dest, X),
-    hbf('pontoDistribuicao', X, Perc, Total),
-    entregaEncomendas(X, T, Perc, Total).
-% Lista Vazia
-entregaEncomendas(Orig, [[]], Perc, Total) :-
-    hbf(Orig, 'pontoDistribuicao', Perc, Total).
-entregaEncomendas(Orig, [Dest| T], Perc, Total) :-
-    nth1(1, Dest, X), hbf(Orig, X, Perc, Total),
-    entregaEncomendas(X, T, Perc, Total).
+% Função que investiga qual dos nós onde é necessário entregar
+% encomendas está mais longe do centro de distribuição
+percurso_mais_longe(List, X) :- reverse(List, [X|_]).
 
-% Método de Pesquisa A-star
+% Função que verifica se no conjunto de nós visitados a solução existe
+verificar_solucao([], _).
+verificar_solucao([Encomenda|Encomendas], Visitados) :-
+    member(Encomenda, Visitados),
+    verificar_solucao(Encomendas, Visitados).
 
-hbf(Orig, Dest, Perc, Total) :-
-    write(Orig), write(Dest),
-    estimativa(Orig, Dest, H), F is H + 0,
-    hbf1([c(F/0, [Orig])], Dest, P, Total),
-    reverse(P, Perc).
+% Função que itera pelos vários percursos
+percurso(A,B,Path,Len) :-
+       proximo_no(A,B,[A],Q,Len), 
+       reverse(Q,Path).
 
-hbf1(Percursos, Dest, Percurso, Total) :-
-    menor_percurso(Percursos, Menor, Restantes),
-    percursos_seguintes(Menor, Dest, Restantes, Percurso, Total).
+% Função que "viaja" para o nó seguinte do nó onde estamos
+proximo_no(A,B,P,[B|P],L) :- 
+       caminhos(A,B,L).
+proximo_no(A,B,Visited,Path,L) :-
+       caminhos(A,C,D),           
+       C \== B,
+       \+member(C,Visited),
+       proximo_no(C,B,[C|Visited],Path,L1),
+       L is D+L1.  
 
-percursos_seguintes(c(_/Dist, Percurso), Dest, _, Percurso, Dist) :- Percurso = [Dest| _].
-percursos_seguintes(c(_, [Dest| _]), Dest, Restantes, Percurso, Total) :- 
-    !, hbf1(Restantes, Dest, Percurso, Total).
-percursos_seguintes(c(_/Dist, [Ult| T]), Dest, Percursos, Percurso, Total) :-
-    findall(
-        c(F1/D1, [Z, Ult| T]),
-        proximo_no(Ult, T, Z, Dist, Dest, F1/D1),
-        Lista),
-    append(Lista, Percursos, NovosPercursos),
-    hbf1(NovosPercursos, Dest, Percurso, Total).
-
-proximo_no(X, T, Y, Dist, Dest, F/Dist1) :- 
-    (estrada(X, Y, Z); estrada(Y, X, Z)), \+ member(Y, T),
-    Dist1 is Dist + Z,
-    estimativa(Y, Dest, H), F is H + Dist1.
-
-estimativa(C1, C2, Est) :-
-    cidade(C1, _, X1, Y1, _),
-    cidade(C2, _, X2, Y2, _),
-    DX is X1 - X2,
-    DY is Y1 - Y2,
-    Est is sqrt(DX * DX + DY * DY).
-
-menor_percurso([Percurso| Percursos], Menor, [Percurso| Resto]) :-
-    menor_percurso(Percursos, Menor, Resto), menor(Menor, Percurso), !.
-menor_percurso([Percurso| Resto], Percurso, Resto).
-
-menor(c(H1/D1, _), c(H2/D2, _)) :-
-    C1 is H1 + D1,
-    C2 is H2 + D2,
-    C1 < C2.
+% Função que retorna todas as soluções organizadas de forma ótima
+% (caminho mais curto)
+caminho_mais_curto(A,B,Path,Length) :-
+   setof([P,L],percurso(A,B,P,L),Set),
+   Set = [_|_], % falha se vazio
+   minimo(Set,[Path,Length]).

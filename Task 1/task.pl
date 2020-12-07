@@ -1,4 +1,4 @@
-% Load external modules
+% Carregar modulo de factos
 :- use_module(facts).
 
 % Testar a tarefa:
@@ -86,11 +86,4 @@ go2([(C, [Ult| T])| Outros], Dest, Segundos, _, Perc) :-
     go2(NPerc1, Dest, Segundos, Segundos, Perc).
 
 % Função auxiliar para saltar de nós método 2
-proximo_noh(X, T, Z, C) :- trip(_, X, Z, C), \+ member(Z, T).
-
-
-    
-
-    
-    
-    
+proximo_noh(X, T, Z, C) :- trip(_, X, Z, C), \+ member(Z, T).   
